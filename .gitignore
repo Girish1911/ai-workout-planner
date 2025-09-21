@@ -45,11 +45,11 @@ Operating System Files
 .DS_Store
 Thumbs.db
 
-Project-specific files to ignore
-It's best practice not to commit generated data or models.
-Anyone who clones the repo should run the scripts to generate these.
+NOTE FOR DEPLOYMENT:
+We are intentionally NOT ignoring the .csv and .pkl files
+so they can be pushed to GitHub and used by Render.
+A standard .gitignore would normally include:
 *.csv
 *.pkl
-
 Log files
 *.log
