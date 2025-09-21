@@ -1,63 +1,104 @@
-AI Workout Planner
-This project is a machine learning-based workout planner that suggests a personalized workout routine based on user input.
+FlexAI: Your Personal AI Workout Planner
+FlexAI is a smart web application that generates personalized workout plans based on your fitness level and target muscle group. Powered by Python, Flask, and a real-world Kaggle dataset, it provides dynamic and varied exercise routines to help you reach your fitness goals.
 
-Project Structure
-README.md: This file, providing an overview of the project.
+✨ Features
+Dynamic Workout Generation: Get a multi-exercise plan tailored to your selections.
 
-requirements.txt: A list of Python dependencies required to run the project.
+Intelligent Fallback Logic: If no "Expert" exercises are found, the app smartly suggests "Intermediate" ones, ensuring you always get a plan.
 
-data_generation.py: A script to generate synthetic workout data.
+Specialized "Full Body" Routine: Select "Full Body" to get a comprehensive workout covering all major muscle groups.
 
-model_training.py: A script to train the machine learning model.
+Real-World Data: Utilizes the "Mega Gym Dataset" from Kaggle for a wide variety of exercises.
 
-app.py: The Flask backend that serves the model's predictions.
+Clean, Responsive UI: A simple and intuitive interface built with Tailwind CSS.
 
-index.html: The frontend user interface for the workout planner.
+🛠️ Technology Stack
+Backend: Python, Flask, Pandas, Joblib
 
-workout_data.csv: The generated dataset (will be created by data_generation.py).
+Frontend: HTML, Tailwind CSS, JavaScript
 
-workout_model.pkl: The trained machine learning model (will be created by model_training.py).
+Server: Gunicorn
 
-Step-by-Step Instructions
-1. Set Up Your Environment
-First, make sure you have Python 3 installed. Then, create a virtual environment to keep your project dependencies isolated.
+Deployment: Render
+
+🚀 Getting Started
+Follow these instructions to get a local copy up and running.
+
+1. Prerequisites
+Make sure you have the following installed on your system:
+
+Git
+
+Python 3.10+
+
+2. Clone the Repository
+Open your terminal or command prompt and clone the repository:
+
+git clone [https://github.com/Girish1911/ai-workout-planner.git](https://github.com/Girish1911/ai-workout-planner.git)
+cd ai-workout-planner
+
+3. Create and Activate a Virtual Environment
+It is crucial to use a virtual environment to manage project dependencies.
+
+On Windows (PowerShell):
 
 python -m venv venv
-source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+.\venv\Scripts\Activate
 
-2. Install Dependencies
-Install all the required libraries using the requirements.txt file.
+On macOS / Linux:
+
+python3 -m venv venv
+source venv/bin/activate
+
+You should see (venv) at the beginning of your terminal prompt.
+
+4. Install Dependencies
+Install all the required Python libraries from the requirements.txt file:
 
 pip install -r requirements.txt
 
-3. Generate Data
-Create the synthetic dataset that our model will learn from.
+5. Download the Dataset
+This project uses the "Mega Gym Dataset" from Kaggle.
 
-python data_generation.py
+Download the file from here: https://www.kaggle.com/datasets/niharika41298/mega-gym-dataset
 
-This will create a file named workout_data.csv.
+Place the mega_gym.csv file directly inside your project folder (ai-workout-planner/).
 
-4. Train the Model
-Now, train the machine learning model using the data you just generated.
+🏃‍♀️ Usage
+To run the application, you must first process the dataset and then start the web server.
+
+1. Generate the Logic File (One-Time Step)
+Run the training script to process the mega_gym.csv file. This creates the workout_logic.pkl file that the application needs to generate plans.
 
 python model_training.py
 
-This will create a file named workout_model.pkl. This file contains the "brain" of our planner.
+You only need to do this once.
 
-5. Run the Web Application
-Finally, start the Flask web server to bring your application to life.
+2. Run the Web Application
+Start the Flask server using the following command:
 
-flask --app app run
+python -m flask --app backend run
 
-Once the server is running, open your web browser and go to http://127.0.0.1:5000 to see and use your AI Workout Planner!
+Your terminal will show that the server is running. You can now view the application by opening your web browser and navigating to:
+http://127.0.0.1:5000
 
-How It Works
-Data: We create a dataset of fictional users with attributes like age, fitness level, goals, and available time. Each user is assigned a suitable workout plan.
+🌐 Live Demo
+This application has been successfully deployed on Render. You can try it live here:
 
-Model: We use a simple classification model (like a Decision Tree) to learn the patterns between a user's attributes and their recommended workout plan.
+https://ai-workout-planner-w6mh.onrender.com
 
-Backend: The Flask application loads the trained model. When a user submits their information from the frontend, the backend uses the model to predict the best workout plan.
+(Note: The free tier on Render may cause the first load to be slow. Please be patient!)
 
-Frontend: A simple HTML page with a form sends the user's data to the backend and displays the recommended workout plan it receives in return.
-
-
+📂 Project File Structure
+ai-workout-planner/
+│
+├── templates/
+│   └── index.html         # The main frontend file
+│
+├── .gitignore             # Tells Git which files to ignore
+├── backend.py             # The main Flask application logic
+├── model_training.py      # Script to process the dataset
+├── requirements.txt       # List of Python dependencies
+├── mega_gym.csv           # The raw dataset (must be downloaded)
+├── workout_logic.pkl      # The processed data file (generated)
+└── README.md              # You are here!
