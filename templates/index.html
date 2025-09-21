@@ -3,77 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlexAI</title>
+    <title>FlexAI - AI Workout Planner</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
         }
-        .exercise-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        /* Simple keyframe animation for the loading spinner */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
-        .exercise-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .loader {
-            border-top-color: #3498db;
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            width: 1rem;
+            height: 1rem;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-            display: none;
+        /* Added styles for the modal transition */
+        .modal {
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-gray-100 text-gray-800">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-slate-900">FlexAI</h1>
-            <p class="text-slate-600 mt-2">Get a personalized workout plan based on the Real World Dataset.</p>
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-10">
+            <h1 class="text-5xl font-bold text-gray-900">FlexAI</h1>
+            <p class="text-xl text-gray-600 mt-2">Get a personalized workout plan based on the Real World Dataset</p>
         </header>
 
         <main>
-            <!-- BMI Calculator Section -->
-            <div class="bg-white p-6 rounded-2xl shadow-md mb-8">
-                <h2 class="text-2xl font-bold mb-4 text-slate-800">BMI Calculator</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- ====================================================== -->
+            <!-- BMI CALCULATOR SECTION (NOW FIRST)                   -->
+            <!-- ====================================================== -->
+            <div class="bg-white p-8 rounded-xl shadow-lg mb-10">
+                <h2 class="text-2xl font-bold mb-6 text-center">BMI Calculator</h2>
+                <form id="bmi-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="height" class="block text-sm font-medium text-slate-700">Height (cm)</label>
-                        <input type="number" id="height" placeholder="e.g., 175" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <label for="weight" class="block text-sm font-medium text-gray-700 mb-2">Weight (kg)</label>
+                        <input type="number" id="weight" name="weight" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., 70" required>
                     </div>
                     <div>
-                        <label for="weight" class="block text-sm font-medium text-slate-700">Weight (kg)</label>
-                        <input type="number" id="weight" placeholder="e.g., 70" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <label for="height" class="block text-sm font-medium text-gray-700 mb-2">Height (cm)</label>
+                        <input type="number" id="height" name="height" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., 175" required>
                     </div>
-                    <div class="self-end">
-                        <button onclick="calculateBMI()" class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">Calculate BMI</button>
+                    <div class="md:col-span-2">
+                        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors duration-300 shadow-md">Calculate BMI</button>
                     </div>
-                </div>
-                <div id="bmiResult" class="mt-4 text-center font-medium"></div>
+                </form>
+                <div id="bmi-result" class="mt-6 text-center text-lg font-medium"></div>
             </div>
 
-            <!-- Workout Planner Form -->
-            <form id="workoutForm" class="bg-white p-6 rounded-2xl shadow-md">
-                <h2 class="text-2xl font-bold mb-4 text-slate-800">Create Your Workout</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Input Form Section -->
+            <div class="bg-white p-8 rounded-xl shadow-lg mb-10">
+                <h2 class="text-2xl font-bold mb-6 text-center">Create Your Workout</h2>
+                <form id="workout-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="level" class="block text-sm font-medium text-slate-700">Fitness Level</label>
-                        <select id="level" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <label for="level" class="block text-sm font-medium text-gray-700 mb-2">Fitness Level</label>
+                        <select id="level" name="level" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             <option>Beginner</option>
                             <option>Intermediate</option>
                             <option>Expert</option>
                         </select>
                     </div>
                     <div>
-                        <label for="body_part" class="block text-sm font-medium text-slate-700">Muscle Group</label>
-                        <select id="body_part" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <label for="body_part" class="block text-sm font-medium text-gray-700 mb-2">Muscle Group</label>
+                        <select id="body_part" name="body_part" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             <option>Back</option>
                             <option>Chest</option>
                             <option>Shoulders</option>
@@ -83,30 +84,131 @@
                             <option>Full Body</option>
                         </select>
                     </div>
-                    <div class="self-end">
-                         <button type="submit" class="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">
-                            <i class="fas fa-cogs mr-2"></i>Generate Plan
+                    <div class="md:col-span-2">
+                        <button type="submit" id="generate-btn" class="w-full flex justify-center items-center gap-2 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition-colors duration-300 shadow-md">
+                            <span id="btn-text">Generate Plan</span>
+                            <div id="btn-spinner" class="spinner hidden"></div>
                         </button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
 
-            <!-- Workout Result Section -->
-            <div id="workoutResult" class="mt-8">
-                 <!-- Workout plan will be dynamically inserted here -->
+            <!-- Results Section -->
+            <div id="results-container">
+                <!-- Workout plan will be injected here -->
             </div>
         </main>
     </div>
 
-    <script>
-        function calculateBMI() {
-            const height = document.getElementById('height').value;
-            const weight = document.getElementById('weight').value;
-            const resultDiv = document.getElementById('bmiResult');
+    <!-- Modal for displaying full exercise details -->
+    <div id="exercise-modal" class="modal fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 hidden" onclick="closeModal()">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-8 relative" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            <h2 id="modal-title" class="text-3xl font-bold mb-4 text-gray-900">Exercise Title</h2>
+            <div class="flex flex-wrap gap-x-4 gap-y-2 mb-6 text-sm">
+                <span id="modal-level" class="bg-indigo-100 text-indigo-800 font-medium px-3 py-1 rounded-full">Level</span>
+                <span id="modal-bodypart" class="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full">Muscle Group</span>
+                <span id="modal-equipment" class="bg-yellow-100 text-yellow-800 font-medium px-3 py-1 rounded-full">Equipment</span>
+            </div>
+            <div class="text-gray-700 leading-relaxed text-base">
+                <p id="modal-desc">Full exercise description will go here.</p>
+            </div>
+        </div>
+    </div>
 
-            if (height > 0 && weight > 0) {
+
+    <script>
+        // --- Workout Form Elements ---
+        const form = document.getElementById('workout-form');
+        const resultsContainer = document.getElementById('results-container');
+        const generateBtn = document.getElementById('generate-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnSpinner = document.getElementById('btn-spinner');
+
+        // --- Modal Elements ---
+        const modal = document.getElementById('exercise-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalLevel = document.getElementById('modal-level');
+        const modalBodypart = document.getElementById('modal-bodypart');
+        const modalEquipment = document.getElementById('modal-equipment');
+        const modalDesc = document.getElementById('modal-desc');
+
+        // --- BMI Calculator Elements ---
+        const bmiForm = document.getElementById('bmi-form');
+        const bmiResultEl = document.getElementById('bmi-result');
+
+        // --- Event Listener for Workout Form ---
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Show loading state
+            btnText.textContent = 'Generating...';
+            btnSpinner.classList.remove('hidden');
+            generateBtn.disabled = true;
+
+            resultsContainer.innerHTML = `
+                <div class="text-center p-8">
+                    <div class="inline-block border-4 border-t-indigo-500 rounded-full w-12 h-12 animate-spin"></div>
+                    <p class="mt-4 text-gray-600">Building your personalized plan...</p>
+                </div>
+            `;
+
+            const formData = {
+                level: document.getElementById('level').value,
+                body_part: document.getElementById('body_part').value
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const workoutPlan = await response.json();
+                resultsContainer.innerHTML = ''; 
+
+                if (workoutPlan.error) {
+                    resultsContainer.innerHTML = `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center shadow-md">${workoutPlan.error}</div>`;
+                } else {
+                    let workoutHTML = '<h2 class="text-3xl font-bold text-center mb-6">Your Custom Workout Plan</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">';
+                    workoutPlan.forEach(exercise => {
+                        workoutHTML += `
+                            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer" 
+                                 onclick='openModal(${JSON.stringify(exercise)})'>
+                                <h3 class="font-bold text-xl mb-2 text-gray-900">${exercise.Title}</h3>
+                                <div class="flex flex-wrap gap-2 mb-3 text-xs">
+                                    <span class="bg-indigo-100 text-indigo-800 font-medium px-2.5 py-0.5 rounded-full">${exercise.Level}</span>
+                                    <span class="bg-green-100 text-green-800 font-medium px-2.5 py-0.5 rounded-full">${exercise.BodyPart}</span>
+                                </div>
+                                <p class="text-gray-600 text-sm truncate">${exercise.Desc}</p>
+                            </div>
+                        `;
+                    });
+                    workoutHTML += '</div>';
+                    resultsContainer.innerHTML = workoutHTML;
+                }
+            } catch (error) {
+                resultsContainer.innerHTML = `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center shadow-md">An error occurred. Check the server logs.</div>`;
+                console.error('Error:', error);
+            } finally {
+                btnText.textContent = 'Generate Plan';
+                btnSpinner.classList.add('hidden');
+                generateBtn.disabled = false;
+            }
+        });
+        
+        // --- Event Listener for BMI Form ---
+        bmiForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+
+            if (weight > 0 && height > 0) {
                 const heightInMeters = height / 100;
-                const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+                const bmi = weight / (heightInMeters * heightInMeters);
+                const bmiRounded = bmi.toFixed(1);
+
                 let category = '';
                 let colorClass = '';
 
@@ -123,65 +225,33 @@
                     category = 'Obesity';
                     colorClass = 'text-red-600';
                 }
-                resultDiv.innerHTML = `Your BMI is <strong class="text-lg">${bmi}</strong>. This is considered <strong class="${colorClass}">${category}</strong>.`;
+                
+                bmiResultEl.innerHTML = `Your BMI is <strong class="${colorClass}">${bmiRounded}</strong>. This is considered <strong class="${colorClass}">${category}</strong>.`;
             } else {
-                resultDiv.innerHTML = `<span class="text-red-500">Please enter valid height and weight.</span>`;
-            }
-        }
-
-        document.getElementById('workoutForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const level = document.getElementById('level').value;
-            const body_part = document.getElementById('body_part').value;
-            const resultDiv = document.getElementById('workoutResult');
-
-            // Clear previous results and show the loader in one step
-            resultDiv.innerHTML = `
-                <div class="flex justify-center items-center">
-                    <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
-                </div>
-            `;
-
-            try {
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ level: level, body_part: body_part })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Server responded with an error');
-                }
-
-                const data = await response.json();
-
-                if (data.error) {
-                    resultDiv.innerHTML = `<div class="text-center p-4 bg-red-100 text-red-700 rounded-lg">${data.error}</div>`;
-                } else {
-                    let html = '<h2 class="text-3xl font-bold mb-6 text-center text-slate-800">Your Custom Workout Plan</h2>';
-                    html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
-                    data.forEach(exercise => {
-                        html += `
-                            <div class="bg-white p-5 rounded-xl shadow-md exercise-card">
-                                <h3 class="text-xl font-bold text-indigo-600">${exercise.Title}</h3>
-                                <p class="text-sm text-slate-500 font-medium my-2">
-                                    <span class="bg-indigo-100 text-indigo-800 py-1 px-2 rounded-full">${exercise.Type}</span>
-                                    <span class="bg-green-100 text-green-800 py-1 px-2 rounded-full">${exercise.Equipment}</span>
-                                </p>
-                                <p class="text-slate-600">${exercise.Desc.substring(0, 150)}...</p>
-                            </div>
-                        `;
-                    });
-                    html += '</div>';
-                    resultDiv.innerHTML = html;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                resultDiv.innerHTML = `<div class="text-center p-4 bg-red-100 text-red-700 rounded-lg"><strong>An error occurred:</strong> ${error.message}. Check the server logs for more details.</div>`;
+                bmiResultEl.innerHTML = `<span class="text-red-600">Please enter valid weight and height.</span>`;
             }
         });
+
+
+        // --- Functions for Exercise Modal ---
+        function openModal(exercise) {
+            modalTitle.textContent = exercise.Title;
+            modalLevel.textContent = exercise.Level;
+            modalBodypart.textContent = exercise.BodyPart;
+            modalEquipment.textContent = exercise.Equipment || 'N/A';
+            modalDesc.textContent = exercise.Desc;
+            modal.classList.remove('hidden');
+            modal.classList.add('opacity-100');
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('opacity-100', 'opacity-0');
+            }, 300);
+        }
+
     </script>
 
 </body>
