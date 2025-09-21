@@ -1,0 +1,12 @@
+Flask is for our web server
+Flask
+
+Pandas and NumPy are for data manipulation
+pandas
+numpy
+
+Scikit-learn is for machine learning
+scikit-learn
+
+Joblib is for saving our trained model
+joblib

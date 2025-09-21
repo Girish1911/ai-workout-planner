@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Workout Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .exercise-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .loader {
+            border-top-color: #3498db;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900">AI Workout Planner</h1>
+            <p class="text-slate-600 mt-2">Get a personalized workout plan based on the Real World Dataset.</p>
+        </header>
+
+        <main>
+            <!-- BMI Calculator Section -->
+            <div class="bg-white p-6 rounded-2xl shadow-md mb-8">
+                <h2 class="text-2xl font-bold mb-4 text-slate-800">BMI Calculator</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="height" class="block text-sm font-medium text-slate-700">Height (cm)</label>
+                        <input type="number" id="height" placeholder="e.g., 175" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="weight" class="block text-sm font-medium text-slate-700">Weight (kg)</label>
+                        <input type="number" id="weight" placeholder="e.g., 70" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div class="self-end">
+                        <button onclick="calculateBMI()" class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">Calculate BMI</button>
+                    </div>
+                </div>
+                <div id="bmiResult" class="mt-4 text-center font-medium"></div>
+            </div>
+
+            <!-- Workout Planner Form -->
+            <form id="workoutForm" class="bg-white p-6 rounded-2xl shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-slate-800">Create Your Workout</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="level" class="block text-sm font-medium text-slate-700">Fitness Level</label>
+                        <select id="level" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option>Beginner</option>
+                            <option>Intermediate</option>
+                            <option>Expert</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="body_part" class="block text-sm font-medium text-slate-700">Muscle Group</label>
+                        <select id="body_part" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option>Back</option>
+                            <option>Chest</option>
+                            <option>Shoulders</option>
+                            <option>Legs</option>
+                            <option>Arms</option>
+                            <option>Core</option>
+                            <option>Full Body</option>
+                        </select>
+                    </div>
+                    <div class="self-end">
+                         <button type="submit" class="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">
+                            <i class="fas fa-cogs mr-2"></i>Generate Plan
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Workout Result Section -->
+            <div id="workoutResult" class="mt-8">
+                 <!-- Workout plan will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function calculateBMI() {
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            const resultDiv = document.getElementById('bmiResult');
+
+            if (height > 0 && weight > 0) {
+                const heightInMeters = height / 100;
+                const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+                let category = '';
+                let colorClass = '';
+
+                if (bmi < 18.5) {
+                    category = 'Underweight';
+                    colorClass = 'text-blue-600';
+                } else if (bmi >= 18.5 && bmi <= 24.9) {
+                    category = 'Normal weight';
+                    colorClass = 'text-green-600';
+                } else if (bmi >= 25 && bmi <= 29.9) {
+                    category = 'Overweight';
+                    colorClass = 'text-yellow-600';
+                } else {
+                    category = 'Obesity';
+                    colorClass = 'text-red-600';
+                }
+                resultDiv.innerHTML = `Your BMI is <strong class="text-lg">${bmi}</strong>. This is considered <strong class="${colorClass}">${category}</strong>.`;
+            } else {
+                resultDiv.innerHTML = `<span class="text-red-500">Please enter valid height and weight.</span>`;
+            }
+        }
+
+        document.getElementById('workoutForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const level = document.getElementById('level').value;
+            const body_part = document.getElementById('body_part').value;
+            const resultDiv = document.getElementById('workoutResult');
+
+            // Clear previous results and show the loader in one step
+            resultDiv.innerHTML = `
+                <div class="flex justify-center items-center">
+                    <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+                </div>
+            `;
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ level: level, body_part: body_part })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Server responded with an error');
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    resultDiv.innerHTML = `<div class="text-center p-4 bg-red-100 text-red-700 rounded-lg">${data.error}</div>`;
+                } else {
+                    let html = '<h2 class="text-3xl font-bold mb-6 text-center text-slate-800">Your Custom Workout Plan</h2>';
+                    html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+                    data.forEach(exercise => {
+                        html += `
+                            <div class="bg-white p-5 rounded-xl shadow-md exercise-card">
+                                <h3 class="text-xl font-bold text-indigo-600">${exercise.Title}</h3>
+                                <p class="text-sm text-slate-500 font-medium my-2">
+                                    <span class="bg-indigo-100 text-indigo-800 py-1 px-2 rounded-full">${exercise.Type}</span>
+                                    <span class="bg-green-100 text-green-800 py-1 px-2 rounded-full">${exercise.Equipment}</span>
+                                </p>
+                                <p class="text-slate-600">${exercise.Desc.substring(0, 150)}...</p>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    resultDiv.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `<div class="text-center p-4 bg-red-100 text-red-700 rounded-lg"><strong>An error occurred:</strong> ${error.message}. Check the server logs for more details.</div>`;
+            }
+        });
+    </script>
+
+</body>
+</html>
+
